@@ -103,19 +103,24 @@ pnpm dev
 # or npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+Open [http://localhost:3000](http://localhost:3000) for local dev, or access production at [https://swipemark.himanshutamoli.site](https://swipemark.himanshutamoli.site).
 
 ---
 
-## 🧩 Installing / Reloading the Chrome Extension
+## 🧩 Installing / Reloading the Browser Extension (Production & Local)
 
-1. Open Google Chrome and navigate to `chrome://extensions`.
+1. Open Google Chrome, Brave, or Edge and navigate to `chrome://extensions` or `brave://extensions`.
 2. Turn ON **Developer mode** in the top right corner.
-3. If previously loaded, click the 🔄 **Reload** icon on the **Bookmark Swipe** extension card.
+3. If previously loaded, click the 🔄 **Reload** icon on the **Swipe Mark** extension card.
    *(If loading for the first time, click **Load unpacked** and select the `bookmark/extension` folder).*
-4. Navigate to [http://localhost:3000](http://localhost:3000). The dashboard header will display:
-   `🟢 2-Way Sync Active`
-5. Click the extension icon in Chrome toolbar, scan your bookmarks, and press **Sync to App**.
+4. Navigate to either:
+   - **Production:** [https://swipemark.himanshutamoli.site](https://swipemark.himanshutamoli.site)
+   - **Local Dev:** [http://localhost:3000](http://localhost:3000)
+   The dashboard header will display: `🟢 2-Way Sync Active`.
+5. Click the extension icon in your browser toolbar:
+   - Use the **⚡ Prod** preset chip to connect to `https://swipemark.himanshutamoli.site`.
+   - Use the **💻 Local** preset chip to connect to `http://localhost:3000`.
+   - Scan your bookmarks and press **Sync to App**.
 
 ---
 

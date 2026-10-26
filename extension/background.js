@@ -46,9 +46,37 @@ function detectBrowser() {
 
 initBrowserDetection();
 
-// Broadcast events to active Bookmark Swipe web dashboard tabs
+// Production & Local Dashboard Domains
+const DASHBOARD_URL_PATTERNS = [
+  'https://swipemark.himanshutamoli.site/*',
+  'http://localhost:3000/*',
+  'http://127.0.0.1:3000/*',
+];
+
+// Helper to retrieve user-configured or default server URL
+async function getServerUrl() {
+  return new Promise((resolve) => {
+    try {
+      chrome.storage.sync.get(['serverUrl'], (syncRes) => {
+        if (!chrome.runtime.lastError && syncRes && syncRes.serverUrl) {
+          return resolve(syncRes.serverUrl.trim().replace(/\/+$/, ''));
+        }
+        chrome.storage.local.get(['serverUrl'], (localRes) => {
+          if (!chrome.runtime.lastError && localRes && localRes.serverUrl) {
+            return resolve(localRes.serverUrl.trim().replace(/\/+$/, ''));
+          }
+          resolve('https://swipemark.himanshutamoli.site');
+        });
+      });
+    } catch {
+      resolve('https://swipemark.himanshutamoli.site');
+    }
+  });
+}
+
+// Broadcast events to active Bookmark Swipe web dashboard tabs (Production or Local)
 function broadcastToDashboard(message) {
-  chrome.tabs.query({ url: ['http://localhost:3000/*', 'http://127.0.0.1:3000/*'] }, (tabs) => {
+  chrome.tabs.query({ url: DASHBOARD_URL_PATTERNS }, (tabs) => {
     if (chrome.runtime.lastError) return;
     for (const tab of tabs) {
       if (tab.id) {
@@ -84,9 +112,10 @@ chrome.commands.onCommand.addListener(async (command) => {
           const chromeId = createdNode?.id || '';
           const chromeParentId = createdNode?.parentId || '';
 
-          // 2. Sync to Swipe Mark Next.js Backend
+          // 2. Sync to Swipe Mark Next.js Backend (Production or Local)
           try {
-            const res = await fetch('http://localhost:3000/api/bookmarks', {
+            const serverBase = await getServerUrl();
+            const res = await fetch(`${serverBase}/api/bookmarks`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
               body: JSON.stringify({

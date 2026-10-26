@@ -30,8 +30,14 @@
       <div class="server-config">
         <div class="input-row">
           <div style="flex: 2;">
-            <label for="serverUrl" class="input-label">Server</label>
-            <input type="text" id="serverUrl" class="text-input" value="http://localhost:3000" spellcheck="false" placeholder="http://localhost:3000">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2px;">
+              <label for="serverUrl" class="input-label">Server</label>
+              <div class="preset-links">
+                <button type="button" id="presetProd" class="preset-chip active" title="Use Production Server">⚡ Prod</button>
+                <button type="button" id="presetLocal" class="preset-chip" title="Use Localhost Server">💻 Local</button>
+              </div>
+            </div>
+            <input type="text" id="serverUrl" class="text-input" value="https://swipemark.himanshutamoli.site" spellcheck="false" placeholder="https://swipemark.himanshutamoli.site">
           </div>
           <div style="flex: 1.2;">
             <label for="browserSelect" class="input-label">Browser</label>

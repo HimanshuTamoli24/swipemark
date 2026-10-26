@@ -842,10 +842,39 @@
     });
   }
 
+  // Dynamic App Links according to configured server URL (Production or Local)
+  function updateAppLinks() {
+    function setLinks(serverUrl) {
+      const base = (serverUrl || 'https://swipemark.himanshutamoli.site').trim().replace(/\/+$/, '');
+      const fullAppUrl = `${base}/app`;
+      const goToAppBtn = document.getElementById('goToAppBtn');
+      const topAppQuickLink = document.getElementById('topAppQuickLink');
+      if (goToAppBtn) goToAppBtn.href = fullAppUrl;
+      if (topAppQuickLink) topAppQuickLink.href = fullAppUrl;
+    }
+
+    if (chrome?.storage?.sync) {
+      chrome.storage.sync.get(['serverUrl'], (syncRes) => {
+        if (!chrome.runtime.lastError && syncRes && syncRes.serverUrl) {
+          setLinks(syncRes.serverUrl);
+        } else if (chrome?.storage?.local) {
+          chrome.storage.local.get(['serverUrl'], (localRes) => {
+            if (localRes && localRes.serverUrl) setLinks(localRes.serverUrl);
+          });
+        }
+      });
+    } else if (chrome?.storage?.local) {
+      chrome.storage.local.get(['serverUrl'], (localRes) => {
+        if (localRes && localRes.serverUrl) setLinks(localRes.serverUrl);
+      });
+    }
+  }
+
   // --- INITIALIZATION ---
   loadSettings();
   setupListeners();
   updateDisplay();
+  updateAppLinks();
 
   // Tick clock every second
   setInterval(() => {

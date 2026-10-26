@@ -47,11 +47,33 @@ document.addEventListener('DOMContentLoaded', async () => {
     browserLabel.textContent = `${detectedBrowser} Extension`;
   }
 
-  // Load saved server URL
+  // Presets & Server URL Elements
+  const presetProd = document.getElementById('presetProd');
+  const presetLocal = document.getElementById('presetLocal');
+
+  function updatePresetChips(url) {
+    const clean = (url || '').trim().toLowerCase().replace(/\/+$/, '');
+    if (clean.includes('swipemark.himanshutamoli.site')) {
+      presetProd?.classList.add('active');
+      presetLocal?.classList.remove('active');
+    } else if (clean.includes('localhost') || clean.includes('127.0.0.1')) {
+      presetLocal?.classList.add('active');
+      presetProd?.classList.remove('active');
+    } else {
+      presetProd?.classList.remove('active');
+      presetLocal?.classList.remove('active');
+    }
+  }
+
+  // Load saved server URL (default to production)
   const savedUrl = await getStoredSetting('serverUrl');
   if (savedUrl) {
     serverUrlInput.value = savedUrl;
+  } else {
+    serverUrlInput.value = 'https://swipemark.himanshutamoli.site';
+    saveStoredSetting('serverUrl', 'https://swipemark.himanshutamoli.site');
   }
+  updatePresetChips(serverUrlInput.value);
 
   // Check server connection
   checkServerConnection();
@@ -59,9 +81,31 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Initial scan automatically
   scanBrowserBookmarks();
 
+  // Event Listeners for Presets
+  presetProd?.addEventListener('click', () => {
+    serverUrlInput.value = 'https://swipemark.himanshutamoli.site';
+    updatePresetChips(serverUrlInput.value);
+    saveStoredSetting('serverUrl', serverUrlInput.value);
+    checkServerConnection();
+  });
+
+  presetLocal?.addEventListener('click', () => {
+    serverUrlInput.value = 'http://localhost:3000';
+    updatePresetChips(serverUrlInput.value);
+    saveStoredSetting('serverUrl', serverUrlInput.value);
+    checkServerConnection();
+  });
+
   // Event Listeners
+  serverUrlInput.addEventListener('input', () => {
+    updatePresetChips(serverUrlInput.value);
+  });
+
   serverUrlInput.addEventListener('change', () => {
-    saveStoredSetting('serverUrl', serverUrlInput.value.trim());
+    const trimmed = serverUrlInput.value.trim().replace(/\/+$/, '');
+    serverUrlInput.value = trimmed;
+    updatePresetChips(trimmed);
+    saveStoredSetting('serverUrl', trimmed);
     checkServerConnection();
   });
 
@@ -78,7 +122,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   importBtn.addEventListener('click', importBookmarksToServer);
 
   openWebAppBtn.addEventListener('click', () => {
-    const targetUrl = serverUrlInput.value.trim() || 'http://localhost:3000';
+    const targetUrl = serverUrlInput.value.trim().replace(/\/+$/, '') || 'https://swipemark.himanshutamoli.site';
     if (chrome?.tabs?.create) {
       chrome.tabs.create({ url: targetUrl });
     } else {
@@ -129,11 +173,24 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
 });
 
-// Storage Helper
+// Storage Helper (supports sync and local storage seamlessly)
 function getStoredSetting(key) {
   return new Promise((resolve) => {
     if (chrome?.storage?.sync) {
-      chrome.storage.sync.get([key], (result) => resolve(result[key]));
+      chrome.storage.sync.get([key], (syncRes) => {
+        if (!chrome.runtime.lastError && syncRes && syncRes[key] !== undefined) {
+          return resolve(syncRes[key]);
+        }
+        if (chrome?.storage?.local) {
+          chrome.storage.local.get([key], (localRes) => {
+            resolve(localRes ? localRes[key] : undefined);
+          });
+        } else {
+          resolve(undefined);
+        }
+      });
+    } else if (chrome?.storage?.local) {
+      chrome.storage.local.get([key], (result) => resolve(result ? result[key] : undefined));
     } else {
       resolve(localStorage.getItem(key));
     }
@@ -142,10 +199,18 @@ function getStoredSetting(key) {
 
 function saveStoredSetting(key, val) {
   if (chrome?.storage?.sync) {
-    chrome.storage.sync.set({ [key]: val });
-  } else {
-    localStorage.setItem(key, val);
+    chrome.storage.sync.set({ [key]: val }, () => {
+      if (chrome.runtime.lastError && chrome?.storage?.local) {
+        chrome.storage.local.set({ [key]: val });
+      }
+    });
   }
+  if (chrome?.storage?.local) {
+    chrome.storage.local.set({ [key]: val });
+  }
+  try {
+    localStorage.setItem(key, typeof val === 'string' ? val : JSON.stringify(val));
+  } catch {}
 }
 
 // Check Connection to Next.js API

@@ -1,5 +1,5 @@
 // Content Script for Bookmark Swipe Two-Way Synchronization
-// Runs in the context of the Bookmark Swipe dashboard (http://localhost:3000 and http://127.0.0.1:3000)
+// Runs in the context of the Bookmark Swipe dashboard (https://swipemark.himanshutamoli.site, http://localhost:3000, and http://127.0.0.1:3000)
 
 console.log('[Bookmark Swipe Extension] Content script loaded on Bookmark Swipe dashboard.');
 

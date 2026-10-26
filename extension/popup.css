@@ -104,6 +104,36 @@ body {
   color: #71717a;
 }
 
+.preset-links {
+  display: flex;
+  gap: 4px;
+}
+
+.preset-chip {
+  background: #f4f4f5;
+  border: 1px solid #d4d4d8;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-size: 10px;
+  font-weight: 700;
+  color: #3f3f46;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  line-height: 1.2;
+}
+
+.preset-chip:hover {
+  background: #e4e4e7;
+  color: #09090b;
+  border-color: #a1a1aa;
+}
+
+.preset-chip.active {
+  background: #18181b;
+  color: #ffffff;
+  border-color: #18181b;
+}
+
 .input-row {
   display: flex;
   gap: 6px;

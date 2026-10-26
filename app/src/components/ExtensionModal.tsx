@@ -82,9 +82,9 @@ export default function ExtensionModal({
               3
             </div>
             <div>
-              <p className="font-bold text-black">Scan & Multi-Browser Tracking</p>
+              <p className="font-bold text-black">Scan & Two-Way Sync (Prod & Local)</p>
               <p className="text-zinc-600 text-xs mt-0.5 font-medium">
-                Click the extension icon. It automatically detects whether you are on <strong>Chrome, Brave, Edge, or Firefox</strong> and syncs bookmark mutations in real time.
+                Click the extension icon. It supports both <strong>Production (swipemark.himanshutamoli.site)</strong> and <strong>Localhost (3000)</strong> with 1-click preset switching.
               </p>
             </div>
           </div>
