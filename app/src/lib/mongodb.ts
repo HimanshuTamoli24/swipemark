@@ -1,6 +1,7 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const rawUri = (process.env.MONGODB_URI || '').trim();
+const MONGODB_URI = rawUri.replace(/^["']|["']$/g, '').trim();
 
 interface MongooseCache {
   conn: typeof mongoose | null;
