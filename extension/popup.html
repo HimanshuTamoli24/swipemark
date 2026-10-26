@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Swipe Mark</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="brand">
+        <div class="logo-badge">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="title">Swipe Mark</h1>
+          <p id="browserLabel" class="subtitle">Multi-Browser Sync</p>
+        </div>
+      </div>
+      <div id="connectionDot" class="status-dot checking" title="Checking server connection..."></div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Target Server Config & Browser Selector -->
+      <div class="server-config">
+        <div class="input-row">
+          <div style="flex: 2;">
+            <label for="serverUrl" class="input-label">Server</label>
+            <input type="text" id="serverUrl" class="text-input" value="http://localhost:3000" spellcheck="false" placeholder="http://localhost:3000">
+          </div>
+          <div style="flex: 1.2;">
+            <label for="browserSelect" class="input-label">Browser</label>
+            <select id="browserSelect" class="text-input" style="padding: 6px 8px;">
+              <option value="Chrome">Chrome</option>
+              <option value="Brave">Brave</option>
+              <option value="Firefox">Firefox</option>
+              <option value="Edge">Edge</option>
+              <option value="Opera">Opera</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div style="display: flex; align-items: flex-end;">
+            <button id="testConnectionBtn" class="btn btn-secondary btn-icon" title="Test Connection">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bookmark Scanner Card -->
+      <div class="card scan-card">
+        <div class="scan-header">
+          <span class="card-label">Detected Bookmarks</span>
+          <span id="scanStatusBadge" class="badge">Ready</span>
+        </div>
+        <div class="stats-row">
+          <div class="stat-item">
+            <span id="statBookmarkCount" class="stat-value">-</span>
+            <span class="stat-name">Bookmarks</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span id="statFolderCount" class="stat-value">-</span>
+            <span class="stat-name">Folders</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shortcut Tip -->
+      <div style="font-size: 11px; background: #f4f4f5; border: 1px dashed #d4d4d8; border-radius: 6px; padding: 6px 8px; color: #52525b; line-height: 1.3;">
+        💡 Shortcut: Press <strong>Ctrl+Shift+B</strong> anywhere in this browser to quick-bookmark active tab!
+      </div>
+
+      <!-- Status Notification Message -->
+      <div id="statusMessage" class="status-message hidden">
+        <span id="statusIcon" class="status-msg-icon"></span>
+        <span id="statusText"></span>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button id="scanBtn" class="btn btn-secondary">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          Scan Browser
+        </button>
+        
+        <button id="importBtn" class="btn btn-primary" disabled>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          Sync to App
+        </button>
+      </div>
+
+      <!-- New Tab Focus Screen Toggle Card -->
+      <div class="card" style="padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; background: #fefce8; border: 1.5px solid #ca8a04;">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span style="font-size: 16px;">⏱️</span>
+          <div>
+            <div style="font-size: 12px; font-weight: 700; color: #713f12;">Focus New Tab</div>
+            <div style="font-size: 10px; color: #a16207;">Clean timer on every new tab</div>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="position: relative; display: inline-block; width: 36px; height: 20px;">
+            <input type="checkbox" id="popupNewTabToggle" checked style="opacity: 0; width: 0; height: 0;">
+            <span id="popupNewTabSlider" style="position: absolute; cursor: pointer; inset: 0; background-color: #86efac; border: 1.5px solid #18181b; border-radius: 20px; transition: 0.2s;"></span>
+          </label>
+          <button id="openNewTabBtn" class="btn btn-secondary btn-icon" style="padding: 3px 6px; font-size: 11px;" title="Preview New Tab">↗</button>
+        </div>
+      </div>
+
+      <button id="openWebAppBtn" class="btn btn-outline">
+        <span>Open Bookmark Swipe App</span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <line x1="10" y1="14" x2="21" y2="3"></line>
+        </svg>
+      </button>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <span>Manifest V3 • Chrome, Brave, Firefox, Edge</span>
+    </footer>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

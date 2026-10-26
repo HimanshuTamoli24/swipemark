@@ -1,0 +1,12 @@
+{
+  "name": "bookmark-swipe-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Bookmark Swipe: Tinder-style bookmark triage web app and Chrome extension",
+  "scripts": {
+    "dev": "npm --prefix app run dev",
+    "build": "npm --prefix app run build",
+    "start": "npm --prefix app run start",
+    "lint": "npm --prefix app run lint"
+  }
+}

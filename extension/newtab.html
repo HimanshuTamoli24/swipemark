@@ -1,0 +1,492 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>New Tab • Focus & Time</title>
+    <link rel="stylesheet" href="newtab.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body id="appBody" class="theme-yellow">
+    <!-- When Disabled Overlay Screen -->
+    <div id="disabledScreen" class="disabled-screen hidden">
+      <div class="disabled-card">
+        <div class="disabled-icon">⏱️</div>
+        <h2>Focus Timer is Paused</h2>
+        <p>You turned off the custom new tab screen in settings.</p>
+        <div class="disabled-actions">
+          <button id="reEnableBtn" class="pill-btn primary">
+            Enable Focus Screen
+          </button>
+          <a
+            id="goToGoogleBtn"
+            href="https://www.google.com"
+            class="pill-btn secondary"
+            >Go to Google Search ↗</a
+          >
+          <a
+            id="goToAppBtn"
+            href="http://localhost:3000/app"
+            class="pill-btn secondary"
+            >Open Bookmarks App ↗</a
+          >
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Active New Tab Container -->
+    <main id="mainContainer" class="main-container">
+      <!-- Top Bar -->
+      <header class="top-bar">
+        <!-- Left: Mode Switcher (Clock & Med Focus Aesthetic Icons) -->
+        <nav class="mode-switcher" aria-label="Mode selector">
+          <button id="modeWatch" class="mode-tab active" data-mode="watch" title="Clock Mode">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            <span>Clock</span>
+          </button>
+          <button id="modeFocus" class="mode-tab" data-mode="focus" title="Meditation & Focus Mode">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <path d="M12 2a7 7 0 0 0-7 7c0 5 7 13 7 13s7-8 7-13a7 7 0 0 0-7-7z"></path>
+              <circle cx="12" cy="9" r="2.5"></circle>
+            </svg>
+            <span>Med Focus</span>
+          </button>
+        </nav>
+
+        <!-- Center / Bookmarks App Quick Link -->
+        <div class="center-nav">
+          <a
+            id="topAppQuickLink"
+            href="http://localhost:3000/app"
+            class="quick-app-btn"
+            title="Open Bookmark Swipe"
+          >
+            <svg
+              width="15"
+              height="15"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="m19 21-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path>
+            </svg>
+            <span>Bookmarks</span>
+          </a>
+        </div>
+
+        <!-- Right: Action Icons -->
+        <div class="top-actions">
+          <!-- Sound / Ambient Audio Toggle -->
+          <button
+            id="soundToggleBtn"
+            class="icon-btn"
+            title="Toggle Sound (Default Off - stops when leaving tab)"
+            aria-label="Sound Toggle"
+          >
+            <svg
+              id="soundIconOff"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="1" y1="1" x2="23" y2="23"></line>
+              <path
+                d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"
+              ></path>
+              <path
+                d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"
+              ></path>
+              <line x1="12" y1="19" x2="12" y2="23"></line>
+              <line x1="8" y1="23" x2="16" y2="23"></line>
+            </svg>
+            <svg
+              id="soundIconOn"
+              class="hidden"
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+          </button>
+
+          <!-- Fullscreen Button -->
+          <button
+            id="fullscreenBtn"
+            class="icon-btn"
+            title="Toggle Fullscreen"
+            aria-label="Fullscreen"
+          >
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <polyline points="9 21 3 21 3 15"></polyline>
+              <line x1="21" y1="3" x2="14" y2="10"></line>
+              <line x1="3" y1="21" x2="10" y2="14"></line>
+            </svg>
+          </button>
+
+          <!-- Settings Button -->
+          <button
+            id="settingsBtn"
+            class="icon-btn"
+            title="Timer & Background Settings"
+            aria-label="Settings"
+          >
+            <svg
+              width="19"
+              height="19"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z"></path>
+              <path d="M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"></path>
+              <path d="M12 2v2"></path>
+              <path d="M12 20v2"></path>
+              <path d="m4.93 4.93 1.41 1.41"></path>
+              <path d="m17.66 17.66 1.41 1.41"></path>
+              <path d="M2 12h2"></path>
+              <path d="M20 12h2"></path>
+              <path d="m6.34 17.66-1.41 1.41"></path>
+              <path d="m19.07 4.93-1.41 1.41"></path>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Center Display -->
+      <section class="center-content">
+        <!-- Huge Digital Clock / Countdown -->
+        <div class="time-display-wrapper">
+          <h1 id="timeDisplay" class="big-timer">00:00</h1>
+          <!-- In watch mode, shows days left in year; in focus mode, shows focus status -->
+          <div id="subTextDisplay" class="sub-text">
+            -- days left to end of this year
+          </div>
+        </div>
+      </section>
+
+      <!-- Bottom Controls: Centered Focus Controls (Zen mode & Date removed) -->
+      <footer class="bottom-bar centered-footer">
+        <!-- Center: Focus Controls Area -->
+        <div id="focusControls" class="focus-controls-wrapper hidden">
+          <!-- Setup Mode (Before Start): Presets + Start -->
+          <div id="focusSetupControls" class="focus-setup-controls">
+            <button class="pill-btn preset-btn" data-min="7">7 Min</button>
+            <button class="pill-btn preset-btn" data-min="14">14 Min</button>
+            <button class="pill-btn preset-btn active" data-min="27">
+              27 Min
+            </button>
+
+            <button
+              id="decrementMinBtn"
+              class="pill-btn icon-circle"
+              title="Subtract 1 min"
+              aria-label="Subtract 1 min"
+            >
+              −
+            </button>
+
+            <button id="startFocusBtn" class="pill-btn action-start">
+              <span id="startFocusLabel">Start Focus</span>
+            </button>
+
+            <button
+              id="incrementMinBtn"
+              class="pill-btn icon-circle"
+              title="Add 1 min"
+              aria-label="Add 1 min"
+            >
+              +
+            </button>
+          </div>
+
+          <!-- Active Running Mode (After Start): Play/Pause + Hold to End -->
+          <div id="focusActiveControls" class="focus-active-controls hidden">
+            <!-- Play / Pause Circle Button -->
+            <button
+              id="pauseResumeBtn"
+              class="pill-btn icon-circle play-pause-circle"
+              title="Pause / Resume Focus"
+              aria-label="Pause / Resume"
+            >
+              <svg
+                id="pauseIcon"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+              </svg>
+              <svg
+                id="playIcon"
+                class="hidden"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+              </svg>
+            </button>
+
+            <!-- Hold to End Container with 3s progress and Space hint -->
+            <div class="hold-wrapper">
+              <button
+                id="holdToEndBtn"
+                class="hold-to-end-pill"
+                title="Hold button or hold Spacebar for 3s to end session"
+                aria-label="Hold to end"
+              >
+                <div id="holdProgressFill" class="hold-progress-fill"></div>
+                <span id="holdLabelText" class="hold-label">Hold to end</span>
+              </button>
+              <span class="hold-subhint">Hold button or Spacebar</span>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+
+    <!-- Settings Drawer / Modal (shadcn + Neobrutalism) -->
+    <div id="settingsBackdrop" class="modal-backdrop hidden">
+      <div
+        class="settings-modal neobrutalist-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="settingsTitle"
+      >
+        <!-- Neobrutalist Header -->
+        <div class="modal-header neo-header">
+          <div class="neo-header-left">
+            <div class="neo-icon-box">⚙️</div>
+            <div>
+              <div class="neo-title-row">
+                <h2 id="settingsTitle" class="neo-title">
+                  Timer & Display Config
+                </h2>
+                <span class="neo-badge">TAB</span>
+              </div>
+              <p class="neo-subtitle">
+                Customize themes, clock format & tab behavior
+              </p>
+            </div>
+          </div>
+          <button
+            id="closeSettingsBtn"
+            class="neo-close-btn"
+            aria-label="Close settings"
+          >
+            ✕
+          </button>
+        </div>
+
+        <!-- Segmented Tabs -->
+        <div class="neo-tabs-bar">
+          <button id="tabThemeBtn" class="neo-tab active" data-tab="theme">
+            🎨 Theme & Colors
+          </button>
+          <button id="tabPrefBtn" class="neo-tab" data-tab="prefs">
+            ⚙️ Preferences
+          </button>
+          <button id="tabAudioBtn" class="neo-tab" data-tab="audio">
+            🔊 Audio & Zen
+          </button>
+        </div>
+
+        <div class="modal-body neo-modal-body">
+          <!-- TAB 1: THEME & COLORS -->
+          <div id="sectionTheme" class="neo-tab-section">
+            <!-- Live Preview Card -->
+            <div id="previewCard" class="neo-preview-card">
+              <div>
+                <div class="neo-preview-label">Live Display Preview</div>
+                <div id="previewTime" class="neo-preview-time">04:51</div>
+              </div>
+              <span id="previewTag" class="neo-preview-tag">#FEF08A</span>
+            </div>
+
+            <!-- Color Presets -->
+            <div class="setting-group">
+              <div class="neo-section-title">Select Preset Theme</div>
+              <div class="color-presets neo-color-grid">
+                <button
+                  class="color-swatch swatch-yellow active"
+                  data-bg="#fef08a"
+                  data-text="#111827"
+                  title="Butter Yellow"
+                ></button>
+                <button
+                  class="color-swatch swatch-sage"
+                  data-bg="#dcfce7"
+                  data-text="#064e3b"
+                  title="Matcha Green"
+                ></button>
+                <button
+                  class="color-swatch swatch-sky"
+                  data-bg="#e0f2fe"
+                  data-text="#0c4a6e"
+                  title="Sky Blue"
+                ></button>
+                <button
+                  class="color-swatch swatch-peach"
+                  data-bg="#ffedd5"
+                  data-text="#7c2d12"
+                  title="Soft Peach"
+                ></button>
+                <button
+                  class="color-swatch swatch-lavender"
+                  data-bg="#f3e8ff"
+                  data-text="#581c87"
+                  title="Lavender"
+                ></button>
+                <button
+                  class="color-swatch swatch-rose"
+                  data-bg="#ffe4e6"
+                  data-text="#881337"
+                  title="Blush Rose"
+                ></button>
+                <button
+                  class="color-swatch swatch-charcoal"
+                  data-bg="#18181b"
+                  data-text="#f4f4f5"
+                  title="Dark Charcoal"
+                ></button>
+                <button
+                  class="color-swatch swatch-midnight"
+                  data-bg="#0f172a"
+                  data-text="#f8fafc"
+                  title="Midnight Navy"
+                ></button>
+              </div>
+
+              <div class="neo-custom-color-card">
+                <div>
+                  <div class="neo-card-title">Pick Any Custom Color</div>
+                  <div class="neo-card-sub">Choose your custom hex color</div>
+                </div>
+                <div class="custom-color-picker-wrap">
+                  <input type="color" id="customBgColor" value="#fef08a" />
+                  <span id="customColorHex" class="neo-hex-badge">#FEF08A</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- TAB 2: PREFERENCES -->
+          <div id="sectionPrefs" class="neo-tab-section hidden">
+            <div class="neo-setting-card">
+              <div>
+                <div class="neo-card-title">Enable New Tab Timer Screen</div>
+                <div class="neo-card-sub">
+                  Show this clean focus timer when opening a new tab
+                </div>
+              </div>
+              <label class="toggle-switch neo-switch">
+                <input type="checkbox" id="enableNewTabToggle" checked />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="neo-setting-card">
+              <div>
+                <div class="neo-card-title">24-Hour Clock Format</div>
+                <div class="neo-card-sub">
+                  Toggle between 12-hour (04:51) and 24-hour (16:51)
+                </div>
+              </div>
+              <label class="toggle-switch neo-switch">
+                <input type="checkbox" id="format24Toggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+
+            <div class="neo-setting-card">
+              <div>
+                <div class="neo-card-title">Show Seconds in Watch Mode</div>
+                <div class="neo-card-sub">
+                  Display live ticking seconds counter
+                </div>
+              </div>
+              <label class="toggle-switch neo-switch">
+                <input type="checkbox" id="showSecondsToggle" />
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <!-- TAB 3: AUDIO & ZEN -->
+          <div id="sectionAudio" class="neo-tab-section hidden">
+            <div class="neo-section-title">
+              Ambient Focus Audio (Default Off)
+            </div>
+            <select id="ambientSoundSelect" class="styled-select neo-select">
+              <option value="none">Off (Default)</option>
+              <option value="white-noise">Gentle White Noise</option>
+              <option value="waves">Deep Ocean Waves</option>
+              <option value="ticking">Soft Clock Ticking</option>
+            </select>
+
+            <div class="neo-notice-card">
+              <span>⚡</span>
+              <div>
+                <strong>Smart Silence:</strong> Audio automatically stops the
+                instant you switch to another browser tab so it never interrupts
+                you.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer neo-footer">
+          <button id="resetDefaultsBtn" class="neo-btn secondary">
+            ↺ Reset Defaults
+          </button>
+          <button id="saveSettingsDoneBtn" class="neo-btn primary">
+            ✓ Save & Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script src="newtab.js"></script>
+  </body>
+</html>
